@@ -5,15 +5,32 @@
     @author McKilla Gorilla
 */
 const express = require('express')
-const StoreController = require('../controllers/store-controller')
 const router = express.Router()
 const auth = require('../auth')
 
-router.post('/playlist', auth.verify, StoreController.createPlaylist)
-router.delete('/playlist/:id', auth.verify, StoreController.deletePlaylist)
-router.get('/playlist/:id', auth.verify, StoreController.getPlaylistById)
-router.get('/playlistpairs', auth.verify, StoreController.getPlaylistPairs)
-router.get('/playlists', auth.verify, StoreController.getPlaylists)
-router.put('/playlist/:id', auth.verify, StoreController.updatePlaylist)
+
+router.post('/playlist', auth.verify, (req, res) => {
+    req.app.locals.playlistController.createPlaylist(req, res);
+});
+
+router.delete('/playlist/:id', auth.verify, (req, res) => {
+    req.app.locals.playlistController.deletePlaylist(req, res);
+});
+
+router.get('/playlist/:id', auth.verify, (req, res) => {
+    req.app.locals.playlistController.getPlaylistById(req, res);
+});
+
+router.get('/playlistpairs', auth.verify, (req, res) => {
+    req.app.locals.playlistController.getPlaylistPairs(req, res);
+});
+
+router.get('/playlists', auth.verify, (req, res) => {
+    req.app.locals.playlistController.getPlaylists(req, res);
+});
+
+router.put('/playlist/:id', auth.verify, (req, res) => {
+    req.app.locals.playlistController.updatePlaylist(req, res);
+});
 
 module.exports = router

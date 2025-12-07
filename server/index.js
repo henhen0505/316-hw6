@@ -18,18 +18,31 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use(cookieParser())
+//initilize
+//factory
+const createDatabaseManager = require('./db');
 
-// SETUP OUR OWN ROUTERS AS MIDDLEWARE
-const authRouter = require('./routes/auth-router')
-app.use('/auth', authRouter)
-const storeRouter = require('./routes/store-router')
-app.use('/store', storeRouter)
+createDatabaseManager()
+    .then((dbManager) => {
+        const AuthController = require('./controllers/auth-controller');
+        const PlaylistController = require('./controllers/store-controller');
+        const authController = new AuthController(dbManager);
+        const playlistController = new PlaylistController(dbManager);
 
-// INITIALIZE OUR DATABASE OBJECT
-const dbManager = require('./db');
+        app.locals.authController = authController;
+        app.locals.playlistController = playlistController;
 
+        // SETUP OUR OWN ROUTERS AS MIDDLEWARE
+        const authRouter = require('./routes/auth-router')
+        app.use('/auth', authRouter)
+        const storeRouter = require('./routes/store-router')
+        app.use('/store', storeRouter)
 
-// PUT THE SERVER IN LISTENING MODE
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+        // PUT THE SERVER IN LISTENING MODE
+        app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 
-
+    })
+    .catch(err =>{
+        console.error('Database connection failed:', err);
+        process.exit(1);
+    });
