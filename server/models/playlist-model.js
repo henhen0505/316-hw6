@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 /*
     This is where we specify the format of the data we're going to put into
     the database.
@@ -9,15 +10,14 @@ const Schema = mongoose.Schema
 const playlistSchema = new Schema(
     {
         name: { type: String, required: true },
-        ownerEmail: { type: String, required: true },
-        songs: { type: [{
-            title: String,
-            artist: String,
-            year: Number,
-            youTubeId: String
-        }], required: true }
+        owner: { type: ObjectId, ref: 'User', required: true },
+        songs: [{ type: ObjectId, ref: 'Song' }],
+        listenerCount: { type: Number, default: 0 },
+        uniqueListeners: [{ type: ObjectId, ref: 'User' }]
     },
     { timestamps: true },
 )
+
+playlistSchema.index({ owner: 1, name: 1 }, { unique: true })
 
 module.exports = mongoose.model('Playlist', playlistSchema)

@@ -1,6 +1,7 @@
 const DatabaseManager = require('../DatabaseManager');
 const User = require('../../models/user-model');
 const Playlist = require('../../models/playlist-model');
+const Song = require('../../models/song-model');
 
 class MongooseManager extends DatabaseManager {
     constructor() {
@@ -39,6 +40,7 @@ class MongooseManager extends DatabaseManager {
 
     async deleteUser(id) {
         await Playlist.deleteMany({ owner: id });
+        await Song.deleteMany({ addedBy: id });
         return await User.findByIdAndDelete(id);
     }
 
@@ -86,9 +88,44 @@ class MongooseManager extends DatabaseManager {
             .populate('songs');
     }
 
+    async createSong(songData) {
+        const song = new Song(songData);
+        return await song.save();
+    }
+
+    async getSongs(query) {
+        return await Song.find(query)
+            .populate('addedBy', 'firstName lastName email avatar')
+            .sort({ createdAt: -1 });
+    }
+
+    async getSongById(id) {
+        return await Song.findById(id)
+            .populate('addedBy', 'firstName lastName email avatar');
+    }
+
+    async updateSong(id, songData) {
+        return await Song.findByIdAndUpdate(
+            id,
+            songData,
+            { new: true, runValidators: true }
+        ).populate('addedBy', 'firstName lastName email avatar');
+    }
+
+     async deleteSong(id) {
+        await Playlist.updateMany(
+            { songs: id },
+            { $pull: { songs: id } }
+        );
+        
+        return await Song.findByIdAndDelete(id);
+     }
+    
+
     async clearAllData() {
         await User.deleteMany({});
         await Playlist.deleteMany({});
+        await Song.deleteMany({});
     }
 
     async bulkInsertUsers(users) {

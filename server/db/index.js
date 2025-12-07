@@ -6,13 +6,8 @@ let dbManager;
 
 if (databaseType === 'mongodb') 
 {
-    const MongoDBManager = require('./mongodb');
-    dbManager = new MongoDBManager();
-} 
-else if (databaseType === 'postgresql') 
-{
-    const PostgreSQLManager = require('./postgresql');
-    dbManager = new PostgreSQLManager();
+    const MongooseManager = require('./mongodb/MongooseManager');
+    dbManager = new MongooseManager();
 } 
 else 
 {
