@@ -249,7 +249,7 @@ class PlaylistController{
     {
             console.log("FAILURE: " + JSON.stringify(err));
             return res.status(404).json({
-                error,
+                error: err,
                 message: 'Playlist not updated!',
             })
     }
