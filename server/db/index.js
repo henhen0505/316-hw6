@@ -2,23 +2,22 @@ const dotenv = require('dotenv');
 dotenv.config();
 const databaseType = process.env.DATABASE_TYPE;
 
-let dbManager;
+async function createDatabaseManager() {
+    if(databaseType=== 'mongodb')
+    {
+        const MongooseManager = require('./mongodb/MongooseManager');
+        const mongoose = require('mongoose');
 
-if (databaseType === 'mongodb') 
-{
-    const MongooseManager = require('./mongodb/MongooseManager');
-    dbManager = new MongooseManager();
-} 
-else 
-{
-    throw new Error(`Unsupported database type: ${databaseType}`);
+        await mongoose.connect(process.env.DB_CONNECT);
+
+        return new MongooseManager();
+    }
+    else 
+    {
+        throw new Error(`Unsupported database type: ${DATABASE_TYPE}`);
+    }
 }
 
-dbManager.connect().then(() => {
-    console.log(`Connected to ${databaseType} database`);
-}).catch(err => {
-    console.error('Database connection error:', err.message);
-});
 
-module.exports = dbManager
+module.exports = createDatabaseManager
 

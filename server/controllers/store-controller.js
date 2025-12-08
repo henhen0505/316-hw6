@@ -137,8 +137,8 @@ class PlaylistController{
             const user = await this.db.findUserById(req.userId);
             console.log("find user with id " + req.userId);
             
-            console.log("find all Playlists owned by " + user.email);
-            const playlists = await this.db.getPlaylistsByOwner(user.email);
+            console.log("find all Playlists owned by " + user._id);
+            const playlists = await this.db.getPlaylistsByOwner(user._id);
             console.log("found Playlists: " + JSON.stringify(playlists));
             
             if (!playlists) 
