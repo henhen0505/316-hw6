@@ -1,6 +1,6 @@
 const dotenv = require('dotenv').config({ path: __dirname + '/../../../.env' });
 
-const MongoDBManager = require('../../../db/mongodb')
+const MongoDBManager = require('../../../db/mongodb/MongooseManager')
 
 
 async function resetMongo() {

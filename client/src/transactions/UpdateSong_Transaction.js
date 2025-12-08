@@ -17,11 +17,21 @@ export default class UpdateSong_Transaction extends jsTPS_Transaction {
         this.newSongData = initNewSongData;
     }
 
-    executeDo() {
-        this.store.updateSong(this.index, this.newSongData);
+    async executeDo() {
+
+        const songId = this.store.currentList.songs[this.index];
+
+        if (songId) {
+            await this.store.updateSong(songId, this.newSongData);
+        }
+    
     }
     
-    executeUndo() {
-        this.store.updateSong(this.index, this.oldSongData);
+    async executeUndo() {
+        const songId = this.store.currentList.songs[this.index];
+
+        if (songId) {
+            await this.store.updateSong(songId, this.oldSongData);
+        }
     }
 }

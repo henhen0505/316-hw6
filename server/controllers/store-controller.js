@@ -20,16 +20,22 @@ class PlaylistController{
                 errorMessage: 'UNAUTHORIZED'
             })
         }
-        const body = req.body;
-        console.log("createPlaylist body: " + JSON.stringify(body));
-        if (!body) {
+        const {name} = req.body;
+        console.log("createPlaylist name: " + JSON.stringify(name));
+        if (!name) {
             return res.status(400).json({
                 success: false,
-                error: 'You must provide a Playlist',
+                error: 'You must provide a Playlist name',
             })
         }
         try{
-            const playlist = await this.db.createPlaylist(body);
+            const playlist = await this.db.createPlaylist({
+                name,
+                owner: req.userId,
+                songs: [],
+                listenerCount: 0,
+                uniqueListeners: []
+            });
             console.log("playlist: " + playlist.toString());
             
             return res.status(201).json({
@@ -37,6 +43,7 @@ class PlaylistController{
             })
         } catch (error)
         {
+            console.error("CREATE PLAYLIST ERROR:", error);
             return res.status(400).json({
                 errorMessage: 'Playlist Not Created!'
             })
@@ -151,7 +158,8 @@ class PlaylistController{
                 let pair = 
                 {
                     _id: list._id,
-                    name: list.name
+                    name: list.name,
+                    songCount : list.songs.length
                 };
                 pairs.push(pair);
             }

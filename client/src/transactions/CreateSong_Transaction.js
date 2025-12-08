@@ -13,11 +13,35 @@ export default class CreateSong_Transaction extends jsTPS_Transaction {
         this.store = initStore;
         this.index = initIndex;
         this.song = initSong;
+        this.createdSongId = null;
     }
 
-    executeDo() {
-        this.store.createSong(this.index, this.song);
+    async executeDo() {
+        
+        console.log("CreateSong_Transaction: executeDo() called");
+        console.log("Song data:", this.song)
+
+        if (this.createdSongId) {
+            this.store.createSong(this.index, this.createdSongId);
+            return;
+        }
+
+        const createdSong = await this.store.createSongInCatalog(
+            this.song.title,
+            this.song.artist,
+            this.song.year,
+            this.song.youTubeId
+        );
+
+        console.log("Created song:", createdSong);
+
+
+         if (createdSong) {
+            this.createdSongId = createdSong._id;
+            this.store.createSong(this.index, this.createdSongId);
+        }
     }
+    
     
     executeUndo() {
         this.store.removeSong(this.index);

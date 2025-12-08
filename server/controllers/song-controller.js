@@ -40,6 +40,7 @@ class SongController{
             });
         } catch (error)
         {
+            console.error("CREATE SONG ERROR:", error);
             return res.status(400).json({
                 errorMessage: 'Song Not Created!'
             })

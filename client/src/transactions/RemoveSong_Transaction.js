@@ -13,7 +13,7 @@ export default class RemoveSong_Transaction extends jsTPS_Transaction {
         super();
         this.store = initStore;
         this.index = initIndex;
-        this.song = initSong;
+        this.songId = initSong;
     }
 
     executeDo() {
@@ -21,6 +21,6 @@ export default class RemoveSong_Transaction extends jsTPS_Transaction {
     }
     
     executeUndo() {
-        this.store.createSong(this.index, this.song);
+        this.store.createSong(this.index, this.songId);
     }
 }

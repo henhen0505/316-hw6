@@ -42,13 +42,14 @@ const fetchRequest = async(url, options = {}) =>{
         throw error;
     }
 }
-export const createPlaylist = (newListName, newSongs, userEmail) => {
+export const createPlaylist = (newListName, songIds = []) => {
     return fetchRequest(`${baseURL}/playlist/`, {
-        method : 'POST',
-        body : JSON. stringify({
+        method: 'POST',
+        body: JSON.stringify({
             name: newListName,
-            songs: newSongs,
-            ownerEmail: userEmail
+            songs: songIds,
+            listenerCount: 0,
+            uniqueListeners: []
         })
     });
 };
@@ -76,12 +77,63 @@ export const updatePlaylistById = (id, playlist) => {
     });
 };
 
+
+
+export const createSong = (title, artist, year, youTubeId) => {
+    return fetchRequest(`${baseURL}/song/`, {
+        method: 'POST',
+        body: JSON.stringify({
+            title,
+            artist,
+            year,
+            youTubeId
+        })
+    });
+};
+
+export const getAllSongs = () => {
+    return fetchRequest(`${baseURL}/songs/`, {
+        method: 'GET'
+    });
+};
+
+export const getSongById = (id) => {
+    return fetchRequest(`${baseURL}/song/${id}`, {
+        method: 'GET'
+    });
+};
+
+export const updateSongById = (id, songData) => {
+    return fetchRequest(`${baseURL}/song/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            title: songData.title,
+            artist: songData.artist,
+            year: songData.year,
+            youTubeId: songData.youTubeId
+        })
+    });
+}
+
+export const deleteSongById = (id) => {
+    return fetchRequest(`${baseURL}/song/${id}`, {
+        method: 'DELETE'
+    });
+};
+
+
+
 const apis = {
     createPlaylist,
     deletePlaylistById,
     getPlaylistById,
     getPlaylistPairs,
-    updatePlaylistById
+    updatePlaylistById,
+    createSong,
+    getAllSongs,
+    getSongById,
+    updateSongById,
+    deleteSongById
 }
 
 export default apis

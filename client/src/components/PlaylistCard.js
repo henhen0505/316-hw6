@@ -76,7 +76,12 @@ function PlaylistCard(props) {
                 handleLoadList(event, idNamePair._id)
             }}
         >
-            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+            <Box sx={{ p: 1, flexGrow: 1 }}>
+                <div style={{ fontSize: '32pt' }}>{idNamePair.name}</div>
+                <div style={{ fontSize: '16pt', color: '#666' }}>
+                    {idNamePair.songCount || 0} songs
+                </div>
+            </Box>            
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
                     <EditIcon style={{fontSize:'48pt'}} />
