@@ -27,4 +27,4 @@ const songSchema = new Schema(
 
 songSchema.index({ title: 1, artist: 1, year: 1 }, { unique: true })
 
-module.exports = mongoose.model('Song', songSchema)
+module.exports = mongoose.models.Song || mongoose.model('Song', songSchema);

@@ -31,11 +31,6 @@ class PlaylistController{
         try{
             const playlist = await this.db.createPlaylist(body);
             console.log("playlist: " + playlist.toString());
-
-            const user = await this.db.findUserById(req.userId);
-            console.log("user found: " + JSON.stringify(user));
-            
-            await this.db.addPlaylistToUser(user._id, playlist._id);
             
             return res.status(201).json({
                 playlist: playlist

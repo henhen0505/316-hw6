@@ -26,18 +26,21 @@ createDatabaseManager()
     .then((dbManager) => {
         const AuthController = require('./controllers/auth-controller');
         const PlaylistController = require('./controllers/store-controller');
+        const SongController = require('./controllers/song-controller');
         const authController = new AuthController(dbManager);
         const playlistController = new PlaylistController(dbManager);
+        const songController = new SongController(dbManager);
 
         app.locals.authController = authController;
         app.locals.playlistController = playlistController;
-
+        app.locals.songController = songController;
         // SETUP OUR OWN ROUTERS AS MIDDLEWARE
         const authRouter = require('./routes/auth-router')
         app.use('/auth', authRouter)
         const storeRouter = require('./routes/store-router')
         app.use('/store', storeRouter)
-
+        const songRouter = require('./routes/song-router')
+        app.use('/store', songRouter)   
         // PUT THE SERVER IN LISTENING MODE
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 

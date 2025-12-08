@@ -1,7 +1,9 @@
 import { beforeAll, beforeEach, afterEach, afterAll, expect, test } from 'vitest';
+import { create } from '../models/user-model';
 const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
-const dbManager = require('../db');
+const createDatabaseManager = require('../db');
 
+let dbManager;
 /**
  * Vitest test script for the Playlister app's Mongo Database Manager. Testing should verify that the Mongo Database Manager 
  * will perform all necessarily operations properly.
@@ -21,7 +23,7 @@ const dbManager = require('../db');
 beforeAll(async () => {
     // SETUP THE CONNECTION VIA MONGOOSE JUST ONCE - IT IS IMPORTANT TO NOTE THAT INSTEAD
     // OF DOING THIS HERE, IT SHOULD BE DONE INSIDE YOUR Database Manager (WHICHEVER)
-    await dbManager.connect();
+    dbManager = await createDatabaseManager();
 });
 
 /**
@@ -41,7 +43,6 @@ afterEach(() => {
  * Executed once after all tests are performed.
  */
 afterAll(async() => {
-    await dbManager.disconnect();
 });
 
 /**
@@ -53,7 +54,8 @@ test('Test #1) Reading a User from the Database', async() => {
         firstName: 'Test',
         lastName: 'User',
         email: 'test@user.com',
-        passwordHash: '$2a$10$abcdefghijklmnopqrstuvwxyz123456'
+        passwordHash: '$2a$10$abcdefghijklmnopqrstuvwxyz123456',
+        avatar: 'default.png'
     };
 
     await dbManager.createUser(testUser);
@@ -69,12 +71,12 @@ test('Test #1) Reading a User from the Database', async() => {
  */
 test('Test #2) Creating a User in the Database', async() => {
     // MAKE A TEST USER TO CREATE IN THE DATABASE
-    const testUser = 
-    {
+    const testUser = {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@doe.com',
-        passwordHash: '$2a$10$abcdefghijklmnopqrstuvwxyz123456'
+        passwordHash: '$2a$10$abcdefghijklmnopqrstuvwxyz123456',
+        avatar: 'default.png'
     };
 
     await dbManager.createUser(testUser);
@@ -90,7 +92,8 @@ test('Test #3) Finding a User by ID', async () => {
         firstName: 'Jane',
         lastName: 'Smith',
         email: 'jane@smith.com',
-        passwordHash: 'hash'
+        passwordHash: 'hash',
+        avatar: 'default.png'
     });
 
     const foundUser = await dbManager.findUserById(createdUser._id);
@@ -102,7 +105,8 @@ test('Test #4) Updating a User', async () => {
         firstName: 'Old',
         lastName: 'Name',
         email: 'old@name.com',
-        passwordHash: 'hash'
+        passwordHash: 'hash',
+        avatar: 'default.png'
     });
 
     const updatedUser = await dbManager.updateUser(createdUser._id, { firstName: 'New' });
@@ -114,7 +118,8 @@ test('Test #5) Deleting a User', async () => {
         firstName: 'Delete',
         lastName: 'Me',
         email: 'delete@me.com',
-        passwordHash: 'hash'
+        passwordHash: 'hash',
+        avatar: 'default.png'
     });
 
     await dbManager.deleteUser(createdUser._id);
@@ -123,22 +128,42 @@ test('Test #5) Deleting a User', async () => {
 });
 
 test('Test #6) Creating a Playlist', async () => {
+    const user = await dbManager.createUser({
+        firstName: 'Owner',
+        lastName: 'Test',
+        email: 'owner@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
     const testPlaylist = {
         name: 'Test Playlist',
-        ownerEmail: 'test@owner.com',
-        songs: []
+        owner: user._id,
+        songs: [],
+        listenerCount: 0,
+        uniqueListeners: []
     };
 
-    await dbManager.createPlaylist(testPlaylist);
-    const playlists = await dbManager.getPlaylistsByOwner('test@owner.com');
+    const createdPlaylist = await dbManager.createPlaylist(testPlaylist);
+    const playlists = await dbManager.getPlaylistsByOwner(user._id);
     expect(playlists.length).toBe(1);
 });
 
 test('Test #7) Getting a Playlist by ID', async () => {
+    const user = await dbManager.createUser({
+        firstName: 'Owner',
+        lastName: 'Test',
+        email: 'owner@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
     const createdPlaylist = await dbManager.createPlaylist({
         name: 'My Playlist',
-        ownerEmail: 'owner@test.com',
-        songs: []
+        owner: user._id,
+        songs: [],
+        listenerCount: 0,
+        uniqueListeners: []
     });
 
     const foundPlaylist = await dbManager.getPlaylistById(createdPlaylist._id);
@@ -146,10 +171,20 @@ test('Test #7) Getting a Playlist by ID', async () => {
 });
 
 test('Test #8) Updating a Playlist', async () => {
+    const user = await dbManager.createUser({
+        firstName: 'Owner',
+        lastName: 'Test',
+        email: 'owner@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
     const createdPlaylist = await dbManager.createPlaylist({
         name: 'Old',
-        ownerEmail: 'owner@test.com',
-        songs: []
+        owner: user._id,
+        songs: [],
+        listenerCount: 0,
+        uniqueListeners: []
     });
 
     const updatedPlaylist = await dbManager.updatePlaylist(createdPlaylist._id, { name: 'New' });
@@ -157,10 +192,20 @@ test('Test #8) Updating a Playlist', async () => {
 });
 
 test('Test #9) Deleting a Playlist', async () => {
+    const user = await dbManager.createUser({
+        firstName: 'Owner',
+        lastName: 'Test',
+        email: 'owner@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
     const createdPlaylist = await dbManager.createPlaylist({
         name: 'Delete',
-        ownerEmail: 'owner@test.com',
-        songs: []
+        owner: user._id,
+        songs: [],
+        listenerCount: 0,
+        uniqueListeners: []
     });
 
     await dbManager.deletePlaylist(createdPlaylist._id);
@@ -169,60 +214,206 @@ test('Test #9) Deleting a Playlist', async () => {
 });
 
 test('Test #10) Getting Playlists by Owner', async () => {
-    await dbManager.createPlaylist({ name: 'P1', ownerEmail: 'owner@test.com', songs: [] });
-    await dbManager.createPlaylist({ name: 'P2', ownerEmail: 'owner@test.com', songs: [] });
+    const user = await dbManager.createUser({
+        firstName: 'Owner',
+        lastName: 'Test',
+        email: 'owner@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
 
-    const playlists = await dbManager.getPlaylistsByOwner('owner@test.com');
+    await dbManager.createPlaylist({ 
+        name: 'P1', 
+        owner: user._id, 
+        songs: [],
+        listenerCount: 0,
+        uniqueListeners: []
+    });
+    await dbManager.createPlaylist({ 
+        name: 'P2', 
+        owner: user._id, 
+        songs: [],
+        listenerCount: 0,
+        uniqueListeners: []
+    });
+
+    const playlists = await dbManager.getPlaylistsByOwner(user._id);
     expect(playlists.length).toBe(2);
 });
 
 test('Test #11) Getting All Playlists', async () => {
-    await dbManager.createPlaylist({ name: 'PA', ownerEmail: 'a@test.com', songs: [] });
+    const user = await dbManager.createUser({
+        firstName: 'Owner',
+        lastName: 'Test',
+        email: 'a@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
+    await dbManager.createPlaylist({ 
+        name: 'PA', 
+        owner: user._id, 
+        songs: [],
+        listenerCount: 0,
+        uniqueListeners: []
+    });
     
     const playlists = await dbManager.getAllPlaylists();
     expect(playlists.length >= 1).toBe(true);
 });
 
-test('Test #12) Adding Playlist to User', async () => {
+test('Test #12) Creating a Song', async () => {
     const user = await dbManager.createUser({
-        firstName: 'User',
-        lastName: 'Owner',
-        email: 'user@test.com',
-        passwordHash: 'hash'
+        firstName: 'Artist',
+        lastName: 'Test',
+        email: 'artist@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
     });
 
-    const playlist = await dbManager.createPlaylist({
-        name: 'Playlist',
-        ownerEmail: 'user@test.com',
-        songs: []
+    const song = await dbManager.createSong({
+        title: 'Test Song',
+        artist: 'Test Artist',
+        year: 2024,
+        youTubeId: 'abc123',
+        addedBy: user._id,
+        listenCount: 0,
+        playlistCount: 0
     });
 
-    const updatedUser = await dbManager.addPlaylistToUser(user._id, playlist._id);
-    expect(updatedUser.playlists.length).toBe(1);
+    expect(song.title).toBe('Test Song');
 });
 
-test('Test #13) Clear All Data', async () => {
-    await dbManager.createUser({ firstName: 'T', lastName: 'U', email: 'clear@test.com', passwordHash: 'h' });
+test('Test #13) Getting a Song by ID', async () => {
+    const user = await dbManager.createUser({
+        firstName: 'Artist',
+        lastName: 'Test',
+        email: 'artist@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
+    const createdSong = await dbManager.createSong({
+        title: 'My Song',
+        artist: 'Artist',
+        year: 2024,
+        youTubeId: 'xyz',
+        addedBy: user._id,
+        listenCount: 0,
+        playlistCount: 0
+    });
+
+    const foundSong = await dbManager.getSongById(createdSong._id);
+    expect(foundSong.title).toBe('My Song');
+});
+
+test('Test #14) Updating a Song', async () => {
+    const user = await dbManager.createUser({
+        firstName: 'Artist',
+        lastName: 'Test',
+        email: 'artist@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
+    const createdSong = await dbManager.createSong({
+        title: 'Old Title',
+        artist: 'Artist',
+        year: 2024,
+        youTubeId: 'xyz',
+        addedBy: user._id,
+        listenCount: 0,
+        playlistCount: 0
+    });
+
+    const updatedSong = await dbManager.updateSong(createdSong._id, { title: 'New Title' });
+    expect(updatedSong.title).toBe('New Title');
+});
+
+test('Test #15) Deleting a Song', async () => {
+    const user = await dbManager.createUser({
+        firstName: 'Artist',
+        lastName: 'Test',
+        email: 'artist@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
+    const createdSong = await dbManager.createSong({
+        title: 'Delete Song',
+        artist: 'Artist',
+        year: 2024,
+        youTubeId: 'xyz',
+        addedBy: user._id,
+        listenCount: 0,
+        playlistCount: 0
+    });
+
+    await dbManager.deleteSong(createdSong._id);
+    const foundSong = await dbManager.getSongById(createdSong._id);
+    expect(foundSong).toBe(null);
+});
+
+test('Test #16) Getting All Songs', async () => {
+    const user = await dbManager.createUser({
+        firstName: 'Artist',
+        lastName: 'Test',
+        email: 'artist@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
+    await dbManager.createSong({
+        title: 'Song 1',
+        artist: 'Artist',
+        year: 2024,
+        youTubeId: 'abc',
+        addedBy: user._id,
+        listenCount: 0,
+        playlistCount: 0
+    });
+
+    const songs = await dbManager.getSongs();
+    expect(songs.length >= 1).toBe(true);
+});
+
+// UTILITY TESTS
+test('Test #17) Clear All Data', async () => {
+    await dbManager.createUser({ 
+        firstName: 'T', 
+        lastName: 'U', 
+        email: 'clear@test.com', 
+        passwordHash: 'h',
+        avatar: 'default.png'
+    });
     await dbManager.clearAllData();
 
     const users = await dbManager.findUserByEmail('clear@test.com');
     expect(users).toBe(null);
 });
 
-test('Test #14) Bulk Insert Users', async () => {
+test('Test #18) Bulk Insert Users', async () => {
     const users = [
-        { firstName: 'U1', lastName: 'T', email: 'u1@test.com', passwordHash: 'h' },
-        { firstName: 'U2', lastName: 'T', email: 'u2@test.com', passwordHash: 'h' }
+        { firstName: 'U1', lastName: 'T', email: 'u1@test.com', passwordHash: 'h', avatar: 'default.png' },
+        { firstName: 'U2', lastName: 'T', email: 'u2@test.com', passwordHash: 'h', avatar: 'default.png' }
     ];
 
     const results = await dbManager.bulkInsertUsers(users);
     expect(results.length).toBe(2);
 });
 
-test('Test #15) Bulk Insert Playlists', async () => {
+test('Test #19) Bulk Insert Playlists', async () => {
+    const user = await dbManager.createUser({
+        firstName: 'Owner',
+        lastName: 'Test',
+        email: 'owner@test.com',
+        passwordHash: 'hash',
+        avatar: 'default.png'
+    });
+
     const playlists = [
-        { name: 'P1', ownerEmail: 'test@test.com', songs: [] },
-        { name: 'P2', ownerEmail: 'test@test.com', songs: [] }
+        { name: 'P1', owner: user._id, songs: [], listenerCount: 0, uniqueListeners: [] },
+        { name: 'P2', owner: user._id, songs: [], listenerCount: 0, uniqueListeners: [] }
     ];
 
     const results = await dbManager.bulkInsertPlaylists(playlists);
