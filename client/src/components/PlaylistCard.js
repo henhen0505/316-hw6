@@ -3,6 +3,7 @@ import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
@@ -81,6 +82,17 @@ function PlaylistCard(props) {
                 <div style={{ fontSize: '16pt', color: '#666' }}>
                     {idNamePair.songCount || 0} songs
                 </div>
+            </Box>
+             <Box sx={{ p: 1 }}>
+                <IconButton 
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        store.openPlayer();
+                    }} 
+                    aria-label='play'
+                >
+                    <PlayArrowIcon style={{fontSize:'48pt', color: '#008000'}} />
+                </IconButton>
             </Box>            
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>

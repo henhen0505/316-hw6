@@ -33,7 +33,11 @@ export const GlobalStoreActionType = {
     REMOVE_SONG: "REMOVE_SONG",
     HIDE_MODALS: "HIDE_MODALS",
     LOAD_SONG_CATALOG: "LOAD_SONG_CATALOG",
-    ADD_SONG_TO_CATALOG: "ADD_SONG_TO_CATALOG"
+    ADD_SONG_TO_CATALOG: "ADD_SONG_TO_CATALOG",
+    OPEN_PLAYER: "OPEN_PLAYER",
+    CLOSE_PLAYER: "CLOSE_PLAYER",
+    SET_PLAYER_SONG: "SET_PLAYER_SONG",
+    TOGGLE_REPEAT: "TOGGLE_REPEAT"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -61,7 +65,10 @@ function GlobalStoreContextProvider(props) {
         listIdMarkedForDeletion: null,
         listMarkedForDeletion: null,
         songCatalog: [],
-        loadingSongs: false
+        loadingSongs: false,
+        isPlayerOpen: false,
+        playerSongIndex: 0,
+        playerRepeat: false
     });
     const history = useHistory();
 
@@ -263,6 +270,82 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     songCatalog: [...store.songCatalog, payload],
                     loadingSongs: false
+                });
+            }
+
+            case GlobalStoreActionType.OPEN_PLAYER: {
+                return setStore({
+                    currentModal: store.currentModal,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    songCatalog: store.songCatalog,
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: true,
+                    playerSongIndex: 0,
+                    playerRepeat: store.playerRepeat
+                });
+            }
+            
+            case GlobalStoreActionType.CLOSE_PLAYER: {
+                return setStore({
+                    currentModal: store.currentModal,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    songCatalog: store.songCatalog,
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: false,
+                    playerSongIndex: 0,
+                    playerRepeat: store.playerRepeat
+                });
+            }
+            
+            case GlobalStoreActionType.SET_PLAYER_SONG: {
+                return setStore({
+                    currentModal: store.currentModal,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    songCatalog: store.songCatalog,
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: payload,
+                    playerRepeat: store.playerRepeat
+                });
+            }
+            
+            case GlobalStoreActionType.TOGGLE_REPEAT: {
+                return setStore({
+                    currentModal: store.currentModal,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    songCatalog: store.songCatalog,
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: !store.playerRepeat
                 });
             }
             default:
@@ -626,6 +709,34 @@ function GlobalStoreContextProvider(props) {
     }
     store.canClose = function() {
         return (store.currentList !== null);
+    }
+
+    store.openPlayer = function() {
+        storeReducer({
+            type: GlobalStoreActionType.OPEN_PLAYER,
+            payload: {}
+        });
+    }
+
+    store.closePlayer = function() {
+        storeReducer({
+            type: GlobalStoreActionType.CLOSE_PLAYER,
+            payload: {}
+        });
+    }
+
+    store.setPlayerSong = function(index) {
+        storeReducer({
+            type: GlobalStoreActionType.SET_PLAYER_SONG,
+            payload: index
+        });
+    }
+
+    store.toggleRepeat = function() {
+        storeReducer({
+            type: GlobalStoreActionType.TOGGLE_REPEAT,
+            payload: {}
+        });
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
