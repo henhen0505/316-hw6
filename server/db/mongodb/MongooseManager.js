@@ -73,11 +73,8 @@ class MongooseManager extends DatabaseManager {
         return await Playlist.findByIdAndDelete(id);
     }
 
-    async getPlaylistsByOwner(ownerEmail) {
-        const user = await User.findOne({ email: ownerEmail.toLowerCase() });
-        if (!user) return [];
-        
-        return await Playlist.find({ owner: user._id })
+    async getPlaylistsByOwner(userId) {
+        return await Playlist.find({ owner: userId })
             .populate('owner', 'firstName lastName email avatar')
             .populate('songs');
     }
