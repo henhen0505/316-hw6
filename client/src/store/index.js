@@ -37,7 +37,8 @@ export const GlobalStoreActionType = {
     OPEN_PLAYER: "OPEN_PLAYER",
     CLOSE_PLAYER: "CLOSE_PLAYER",
     SET_PLAYER_SONG: "SET_PLAYER_SONG",
-    TOGGLE_REPEAT: "TOGGLE_REPEAT"
+    TOGGLE_REPEAT: "TOGGLE_REPEAT",
+    OPEN_PLAYER_WITH_PLAYLIST: "OPEN_PLAYER_WITH_PLAYLIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -96,7 +97,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -112,7 +116,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 })
             }
             // CREATE A NEW LIST
@@ -128,7 +135,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -144,7 +154,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -160,7 +173,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: payload.id,
                     listMarkedForDeletion: payload.playlist,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 });
             }
             // UPDATE A LIST
@@ -176,7 +192,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat        
                 });
             }
             // START EDITING A LIST NAME
@@ -192,7 +211,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 });
             }
             // 
@@ -208,7 +230,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 });
             }
             case GlobalStoreActionType.REMOVE_SONG: {
@@ -223,7 +248,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 });
             }
             case GlobalStoreActionType.HIDE_MODALS: {
@@ -238,7 +266,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     songCatalog: store.songCatalog,
-                    loadingSongs: store.loadingSongs
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 });
             }
 
@@ -254,7 +285,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: store.listIdMarkedForDeletion,
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     songCatalog: payload,
-                    loadingSongs: false
+                    loadingSongs: false,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 });
             }
             case GlobalStoreActionType.ADD_SONG_TO_CATALOG: {
@@ -269,7 +303,10 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: store.listIdMarkedForDeletion,
                     listMarkedForDeletion: store.listMarkedForDeletion,
                     songCatalog: [...store.songCatalog, payload],
-                    loadingSongs: false
+                    loadingSongs: false,
+                    isPlayerOpen: store.isPlayerOpen,
+                    playerSongIndex: store.playerSongIndex,
+                    playerRepeat: store.playerRepeat
                 });
             }
 
@@ -346,6 +383,25 @@ function GlobalStoreContextProvider(props) {
                     isPlayerOpen: store.isPlayerOpen,
                     playerSongIndex: store.playerSongIndex,
                     playerRepeat: !store.playerRepeat
+                });
+            }
+
+            case GlobalStoreActionType.OPEN_PLAYER_WITH_PLAYLIST: {
+                return setStore({
+                    currentModal: store.currentModal,
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    songCatalog: store.songCatalog,
+                    loadingSongs: store.loadingSongs,
+                    isPlayerOpen: true,
+                    playerSongIndex: 0,
+                    playerRepeat: store.playerRepeat
                 });
             }
             default:
@@ -521,6 +577,25 @@ function GlobalStoreContextProvider(props) {
     }
     store.isErrorModalOpen = () => {
         return store.currentModal === CurrentModal.ERROR;
+    }
+
+    store.loadPlaylistForPlayer = function (id) 
+    {
+        async function asyncLoadPlaylist(id) 
+        {
+            let response = await storeRequestSender.getPlaylistById(id);
+            if (response.data.success) 
+                {
+                let playlist = response.data.playlist;
+                
+                //debugged update playlist
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: playlist
+                });
+            }
+        }
+        asyncLoadPlaylist(id);
     }
 
     // THE FOLLOWING 8 FUNCTIONS ARE FOR COORDINATING THE UPDATING
@@ -712,10 +787,31 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.openPlayer = function() {
+        console.log("store.openPlayer called");
+        console.log("isPlayerOpen BEFORE reducer:", store.isPlayerOpen);
+
         storeReducer({
             type: GlobalStoreActionType.OPEN_PLAYER,
             payload: {}
         });
+        console.log("isPlayerOpen AFTER reducer:", store.isPlayerOpen);
+    }
+
+    store.openPlayerWithPlaylist = function(playlistId) 
+    {
+        async function asyncOpenPlayer(playlistId) 
+        {
+            let response = await storeRequestSender.getPlaylistById(playlistId);
+            if (response.data.success) 
+            {
+                let playlist = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.OPEN_PLAYER_WITH_PLAYLIST,
+                    payload: playlist
+                });
+            }
+        }
+        asyncOpenPlayer(playlistId);
     }
 
     store.closePlayer = function() {

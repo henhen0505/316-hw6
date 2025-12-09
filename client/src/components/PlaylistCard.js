@@ -85,9 +85,14 @@ function PlaylistCard(props) {
             </Box>
              <Box sx={{ p: 1 }}>
                 <IconButton 
-                    onClick={(event) => {
+                    onClick={async (event) => {
                         event.stopPropagation();
-                        store.openPlayer();
+                        console.log("Play button clicked!");
+                        console.log("store.currentList:", store.currentList);
+                        console.log("store.isPlayerOpen BEFORE:", store.isPlayerOpen);
+                        
+                        store.openPlayerWithPlaylist(idNamePair._id);
+                        
                     }} 
                     aria-label='play'
                 >

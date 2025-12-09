@@ -20,6 +20,11 @@ function WorkspaceScreen() {
     if (store.isEditSongModalOpen()) {
         modalJSX = <MUIEditSongModal />;
     }
+
+    if (!store.currentList) {
+        return <div>Loading...</div>;
+    }
+    
     return (
         <Box id="list-selector-list">
         <List 
