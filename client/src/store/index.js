@@ -593,14 +593,6 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
 
-                pairsArray = pairsArray.map(pair => ({
-                    _id: pair._id,
-                    name: pair.name,
-                    songCount: pair.songs?.length || 0,
-                    createdAt: pair.createdAt
-                }));
-                console.log(pairsArray);
-
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: pairsArray
