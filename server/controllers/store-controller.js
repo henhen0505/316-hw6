@@ -160,7 +160,8 @@ class PlaylistController{
                     _id: list._id,
                     name: list.name,
                     songCount : list.songs.length,
-                    createdAt: list.createdAt
+                    createdAt: list.createdAt,
+                    published: list.published
                 };
                 pairs.push(pair);
             }
@@ -257,6 +258,39 @@ class PlaylistController{
                 message: 'Playlist not updated!',
             })
     }
+    }
+
+
+    publishPlaylist = async (req, res) => {
+        if(auth.verifyUser(req) === null)
+            {
+            return res.status(400).json({
+                errorMessage: 'UNAUTHORIZED'
+            })
+        }
+        
+        try {
+            const playlist = await this.db.getPlaylistById(req.params.id);
+            
+            if (!playlist) 
+            {
+                return res.status(404).json({ error: 'Playlist not found' });
+            }
+            
+            if (playlist.owner._id.toString() !== req.userId) 
+            {
+                return res.status(400).json({ error: 'Unauthorized' });
+            }
+            
+            playlist.published = req.body.published;
+            await this.db.updatePlaylist(playlist._id, playlist);
+            
+            return res.status(200).json({ success: true, playlist });
+        } 
+        catch (err) {
+            console.error("PUBLISH PLAYLIST ERROR:", err);
+            return res.status(400).json({ error: err.message });
+        }
     }
 }
 module.exports = PlaylistController;

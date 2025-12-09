@@ -121,6 +121,13 @@ export const deleteSongById = (id) => {
     });
 };
 
+export const publishPlaylist = (id, published) => {
+    return fetchRequest(`${baseURL}/playlist/${id}/publish`, {
+        method: 'PUT',
+        body: JSON.stringify({ published })
+    });
+};
+
 
 
 const apis = {
@@ -133,7 +140,8 @@ const apis = {
     getAllSongs,
     getSongById,
     updateSongById,
-    deleteSongById
+    deleteSongById,
+    publishPlaylist
 }
 
 export default apis

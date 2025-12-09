@@ -13,7 +13,8 @@ const playlistSchema = new Schema(
         owner: { type: ObjectId, ref: 'User', required: true },
         songs: [{ type: ObjectId, ref: 'Song' }],
         listenerCount: { type: Number, default: 0 },
-        uniqueListeners: [{ type: ObjectId, ref: 'User' }]
+        uniqueListeners: [{ type: ObjectId, ref: 'User' }],
+        published: { type: Boolean, default: false }
     },
     { timestamps: true },
 )

@@ -4,9 +4,12 @@ import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PublishIcon from '@mui/icons-material/Publish';
+
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
+
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -20,6 +23,7 @@ function PlaylistCard(props) {
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair } = props;
+    const [published, setPublished] = useState(idNamePair.published || false);
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
@@ -65,7 +69,12 @@ function PlaylistCard(props) {
     function handleUpdateText(event) {
         setText(event.target.value);
     }
-
+    function handlePublish(event) {
+        event.stopPropagation();
+        const newPublished = !published;
+        setPublished(newPublished);
+        store.publishPlaylist(idNamePair._id, newPublished);
+    }
     let cardElement =
         <ListItem
             id={idNamePair._id}
@@ -109,6 +118,11 @@ function PlaylistCard(props) {
                         handleDeleteList(event, idNamePair._id)
                     }} aria-label='delete'>
                     <DeleteIcon style={{fontSize:'48pt'}} />
+                </IconButton>
+            </Box>
+            <Box sx={{ p: 1 }}>
+                <IconButton onClick={handlePublish} aria-label='publish'>
+                    <PublishIcon style={{fontSize:'48pt', color: published ? '#4CAF50' : '#999'}} />
                 </IconButton>
             </Box>
         </ListItem>

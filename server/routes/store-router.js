@@ -33,4 +33,8 @@ router.put('/playlist/:id', auth.verify, (req, res) => {
     req.app.locals.playlistController.updatePlaylist(req, res);
 });
 
+router.put('/playlist/:id/publish', auth.verify, (req, res) => {
+    req.app.locals.playlistController.publishPlaylist(req, res);
+});
+
 module.exports = router

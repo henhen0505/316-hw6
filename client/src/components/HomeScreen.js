@@ -99,7 +99,7 @@ const HomeScreen = () => {
                     </Select>
                 </FormControl>
             </Box>
-            <Box sx={{bgcolor:"background.paper", position: "relative", marginTop:'10%', height: "auto", paddingTop:2}} id="list-selector-list">
+            <Box sx={{bgcolor:"background.paper", position: "relative", marginTop:'12%', height: "auto", paddingTop:2}} id="list-selector-list">
                 {
                     listCard
                 }

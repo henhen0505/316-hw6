@@ -637,6 +637,18 @@ function GlobalStoreContextProvider(props) {
         store.hideModals();
         
     }
+
+    store.publishPlaylist = function(id, published) {
+        async function asyncPublish() 
+        {
+            const response = await storeRequestSender.publishPlaylist(id, published);
+            if (response.data.success) 
+            {
+                store.loadIdNamePairs();
+            }
+        }
+        asyncPublish();
+    }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
 
