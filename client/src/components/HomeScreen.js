@@ -9,6 +9,10 @@ import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box'
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -64,7 +68,7 @@ const HomeScreen = () => {
             </Fab>
                 Your Playlists
             </div>
-            <Box sx={{ p: 2, bgcolor: 'background.paper', position: 'relative', zIndex: 10 }}>  
+            <Box sx={{ p: 2, bgcolor: 'background.paper' }}>  
                 <TextField
                     fullWidth
                     label="Search Playlists"
@@ -74,7 +78,28 @@ const HomeScreen = () => {
                     placeholder="Type to filter playlists..."
                 />
             </Box>
-            <Box sx={{bgcolor:"background.paper", position: "static", marginTop:'7%', height: "auto", paddingTop:2}} id="list-selector-list">
+            <Box sx={{ p: 2, bgcolor: 'background.paper', zIndex:100, position: 'relative' }}>
+                <FormControl fullWidth variant="outlined" sx={{ bgcolor: 'white' }}>
+                    <InputLabel id="sort-by-label">Sort By</InputLabel>
+                    <Select
+                        labelId="sort-by-label"
+                        id="sort-by-select"
+                        value={store.sortBy}
+                        label="Sort By"
+                        onChange={(e) => {
+                            console.log("Sort changed to:", e.target.value);
+                            store.setSortBy(e.target.value);
+                        }}
+                        onClick={() => console.log("Sort dropdown clicked")}
+                    >
+                        <MenuItem value="name-az">Name (A-Z)</MenuItem>
+                        <MenuItem value="name-za">Name (Z-A)</MenuItem>
+                        <MenuItem value="date-newest">Date (Newest First)</MenuItem>
+                        <MenuItem value="date-oldest">Date (Oldest First)</MenuItem>
+                    </Select>
+                </FormControl>
+            </Box>
+            <Box sx={{bgcolor:"background.paper", position: "relative", marginTop:'10%', height: "auto", paddingTop:2}} id="list-selector-list">
                 {
                     listCard
                 }

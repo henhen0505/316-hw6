@@ -159,7 +159,8 @@ class PlaylistController{
                 {
                     _id: list._id,
                     name: list.name,
-                    songCount : list.songs.length
+                    songCount : list.songs.length,
+                    createdAt: list.createdAt
                 };
                 pairs.push(pair);
             }
