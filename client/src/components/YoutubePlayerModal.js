@@ -223,7 +223,7 @@ export default function YoutubePlayerModal()
             }
             
         
-    }, [store.isPlayerOpen, player, currentSong]);
+    }, [store.isPlayerOpen, currentSong]);
 
     //base case for earlier if not open, dont render
     if (!store.isPlayerOpen || !playlist) {
@@ -233,7 +233,7 @@ export default function YoutubePlayerModal()
     
 
     return (
-        <Modal open={store.isPlayerOpen} onClose={handleClose}>
+        <Modal open={store.isPlayerOpen}>
             <Box sx={style}>
                 {/*on the left*/ }
                 <Box sx={{ width: '40%', pr: 2, overflowY: 'auto' }}>
